@@ -52,10 +52,13 @@ class Classification:
             download_file(ftp, src_img_path, local_file_path)
             classification_image = Classification_Image()
             result = classification_image.classify(local_file_path, model, scaler)
+            task_output = {
+                "output_class": result
+            }
             print("Connection closed")
             cursor = conn.cursor()
             route_to_db(cursor)
-            cursor.execute("UPDATE avt_task SET task_stat = 1, task_output = %s WHERE id = %s", (result, id,))
+            cursor.execute("UPDATE avt_task SET task_stat = 1, task_output = %s WHERE id = %s", (task_output, id,))
         except ftplib.all_errors as e:
             cursor = conn.cursor()
             route_to_db(cursor)
