@@ -55,11 +55,11 @@ class Classification:
             print("Connection closed")
             cursor = conn.cursor()
             route_to_db(cursor)
-            cursor.execute("UPDATE avt_tasks SET task_stat = 1, task_output = %s WHERE id = %s", (result, id,))
+            cursor.execute("UPDATE avt_task SET task_stat = 1, task_output = %s WHERE id = %s", (result, id,))
         except ftplib.all_errors as e:
             cursor = conn.cursor()
             route_to_db(cursor)
-            cursor.execute("UPDATE avt_tasks SET task_stat = 0 WHERE id = %s", (id,))
+            cursor.execute("UPDATE avt_task SET task_stat = 0 WHERE id = %s", (id,))
             print(f"FTP error: {e}")
 
     def process(self, id, model, scaler):
@@ -73,7 +73,7 @@ class Classification:
         cursor = conn.cursor()
         cursor.execute('SET search_path TO public')
         cursor.execute("SELECT current_schema()")
-        cursor.execute("SELECT * FROM avt_tasks WHERE id = %s", (id,))
+        cursor.execute("SELECT * FROM avt_task WHERE id = %s", (id,))
         result = cursor.fetchone()
         classification = Classification()
         task_param = json.loads(result[5])
