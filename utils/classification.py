@@ -59,10 +59,12 @@ class Classification:
             cursor = conn.cursor()
             route_to_db(cursor)
             cursor.execute("UPDATE avt_task SET task_stat = 1, task_output = %s WHERE id = %s", (task_output, id,))
+            conn.commit()
         except ftplib.all_errors as e:
             cursor = conn.cursor()
             route_to_db(cursor)
             cursor.execute("UPDATE avt_task SET task_stat = 0 WHERE id = %s", (id,))
+            conn.commit()
             print(f"FTP error: {e}")
 
     def process(self, id, model, scaler):
