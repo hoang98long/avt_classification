@@ -52,9 +52,9 @@ class Classification:
             download_file(ftp, src_img_path, local_file_path)
             classification_image = Classification_Image()
             result = classification_image.classify(local_file_path, model, scaler)
-            task_output = {
+            task_output = str({
                 "output_class": result
-            }
+            })
             print("Connection closed")
             cursor = conn.cursor()
             route_to_db(cursor)
@@ -81,6 +81,6 @@ class Classification:
         cursor.execute("SELECT * FROM avt_task WHERE id = %s", (id,))
         result = cursor.fetchone()
         classification = Classification()
-        task_param = json.loads(result[5])
+        task_param = json.loads(result[3])
         classification.classify(conn, id, task_param, model, scaler)
         cursor.close()
