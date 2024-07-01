@@ -6,12 +6,11 @@ import psycopg2
 import json
 
 
-
-def connect_ftp():
+def connect_ftp(config_data):
     ftp = ftplib.FTP()
-    ftp.connect(FTP_HOST, FTP_PORT)
+    ftp.connect(config_data['ftp']['host'], config_data['ftp']['port'])
     ftp.set_pasv(True)
-    ftp.login(user=FTP_USERNAME, passwd=FTP_PASSWORD)
+    ftp.login(user=config_data['ftp']['user'], passwd=config_data['ftp']['password'])
     return ftp
 
 
@@ -43,12 +42,12 @@ class Classification:
     def __init__(self):
         pass
 
-    def classify(self, conn, id, task_param, model, scaler):
+    def classify(self, conn, id, task_param, model, scaler, config_data):
         src_img_path = task_param['input_file']
         try:
             filename = src_img_path.split("/")[-1]
             local_file_path = LOCAL_SRC_CLASSIFY_IMAGE_PATH + filename
-            ftp = connect_ftp()
+            ftp = connect_ftp(config_data)
             download_file(ftp, src_img_path, local_file_path)
             classification_image = Classification_Image()
             result = classification_image.classify(local_file_path, model, scaler)
@@ -67,13 +66,13 @@ class Classification:
             conn.commit()
             print(f"FTP error: {e}")
 
-    def process(self, id, model, scaler):
+    def process(self, id, config_data, model, scaler):
         conn = psycopg2.connect(
-            dbname=DB_NAME,
-            user=DB_USER,
-            password=DB_PASSWORD,
-            host=DB_HOST,
-            port=DB_PORT
+            dbname=config_data['database']['database'],
+            user=config_data['database']['user'],
+            password=config_data['database']['password'],
+            host=config_data['database']['host'],
+            port=config_data['database']['port']
         )
         cursor = conn.cursor()
         cursor.execute('SET search_path TO public')
@@ -82,5 +81,5 @@ class Classification:
         result = cursor.fetchone()
         classification = Classification()
         task_param = json.loads(result[3])
-        classification.classify(conn, id, task_param, model, scaler)
+        classification.classify(conn, id, task_param, model, scaler, config_data)
         cursor.close()
