@@ -7,7 +7,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
 import joblib
-from config import *
+from utils.config import *
 
 image_folder = 'dataset/ship'
 labels = SHIP_LABELS
