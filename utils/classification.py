@@ -4,6 +4,8 @@ from utils.config import *
 from utils.classification_image import Classification_Image
 import psycopg2
 import json
+from datetime import datetime
+
 
 
 def connect_ftp(config_data):
@@ -38,6 +40,12 @@ def route_to_db(cursor):
     cursor.execute("SELECT current_schema()")
 
 
+def get_time():
+    now = datetime.now()
+    current_datetime = datetime(now.year, now.month, now.day, now.hour, now.minute, now.second, now.microsecond)
+    return current_datetime
+
+
 class Classification:
     def __init__(self):
         pass
@@ -57,7 +65,7 @@ class Classification:
             print("Connection closed")
             cursor = conn.cursor()
             route_to_db(cursor)
-            cursor.execute("UPDATE avt_task SET task_stat = 1, task_output = %s WHERE id = %s", (task_output, id,))
+            cursor.execute("UPDATE avt_task SET task_stat = 1, task_output = %s, updated_at = %s WHERE id = %s", (task_output, get_time(), id,))
             conn.commit()
         except ftplib.all_errors as e:
             cursor = conn.cursor()
