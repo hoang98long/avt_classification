@@ -1,10 +1,11 @@
 import ftplib
-import os.path
 from utils.config import *
 from utils.classification_image import Classification_Image
 import psycopg2
 import json
 from datetime import datetime
+import os
+import ast
 
 
 
@@ -51,17 +52,32 @@ class Classification:
         pass
 
     def classify(self, conn, id, task_param, model, scaler, config_data):
-        src_img_path = task_param['input_file']
+        input_files = task_param['input_files']
+        input_files = ast.literal_eval(input_files)
         try:
-            filename = src_img_path.split("/")[-1]
-            local_file_path = LOCAL_SRC_CLASSIFY_IMAGE_PATH + filename
+            # filename = src_img_path.split("/")[-1]
+            # local_file_path = LOCAL_SRC_CLASSIFY_IMAGE_PATH + filename
+            # ftp = connect_ftp(config_data)
+            # download_file(ftp, src_img_path, local_file_path)
             ftp = connect_ftp(config_data)
-            download_file(ftp, src_img_path, local_file_path)
+            input_files_local = []
+            task_output = {
+
+            }
+            for input_file in input_files:
+                filename = input_file.split("/")[-1]
+                local_file_path = os.path.join(LOCAL_SRC_CLASSIFY_IMAGE_PATH, filename)
+                input_files_local.append(local_file_path)
+                download_file(ftp, input_file, local_file_path)
             classification_image = Classification_Image()
-            result = classification_image.classify(local_file_path, model, scaler)
-            task_output = str({
-                "output_class": result
-            })
+            for input_file, input_file_local in zip(input_files, input_files_local):
+                result = classification_image.classify(input_file_local, model, scaler)
+                task_output[input_file] = result
+            task_output = str(task_output)
+            # result = classification_image.classify(local_file_path, model, scaler)
+            # task_output = str({
+            #     "output_class": result
+            # })
             print("Connection closed")
             cursor = conn.cursor()
             route_to_db(cursor)
