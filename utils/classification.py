@@ -52,8 +52,9 @@ class Classification:
         pass
 
     def classify(self, conn, id, task_param, model, scaler, config_data):
-        input_files = task_param['input_files']
-        input_files = ast.literal_eval(input_files)
+        input_files = []
+        for ship_object in task_param:
+            input_files.append(ship_object['path'])
         try:
             # filename = src_img_path.split("/")[-1]
             # local_file_path = LOCAL_SRC_CLASSIFY_IMAGE_PATH + filename
@@ -68,7 +69,8 @@ class Classification:
                 filename = input_file.split("/")[-1]
                 local_file_path = os.path.join(LOCAL_SRC_CLASSIFY_IMAGE_PATH, filename)
                 input_files_local.append(local_file_path)
-                download_file(ftp, input_file, local_file_path)
+                if not os.path.isfile(local_file_path):
+                    download_file(ftp, input_file, local_file_path)
             classification_image = Classification_Image()
             for input_file, input_file_local in zip(input_files, input_files_local):
                 result = classification_image.classify(input_file_local, model, scaler)
@@ -104,6 +106,6 @@ class Classification:
         cursor.execute("SELECT task_param FROM avt_task WHERE id = %s", (id,))
         result = cursor.fetchone()
         classification = Classification()
-        task_param = json.loads(result[0])
+        task_param = ast.literal_eval(result[0])
         classification.classify(conn, id, task_param, model, scaler, config_data)
         cursor.close()
