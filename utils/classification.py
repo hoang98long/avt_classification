@@ -75,7 +75,7 @@ class Classification:
             for input_file, input_file_local in zip(input_files, input_files_local):
                 result = classification_image.classify(input_file_local, model, scaler)
                 task_output[input_file] = result
-            task_output = str(task_output)
+            task_output = str(task_output).replace("'", "\"")
             # result = classification_image.classify(local_file_path, model, scaler)
             # task_output = str({
             #     "output_class": result
