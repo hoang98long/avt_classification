@@ -35,6 +35,7 @@ if __name__ == "__main__":
         config_data = json.load(open(args.config_file))
         task_type = 6
         list_task = get_task_id_list(task_type)
-        for task_id in list_task:
-            classification = Classification()
-            classification.process(task_id, config_data, model, scaler)
+        if len(list_task) > 0:
+            for task_id in list_task:
+                classification = Classification()
+                classification.process(task_id, config_data, model, scaler)
