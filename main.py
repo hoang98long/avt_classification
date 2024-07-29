@@ -1,4 +1,6 @@
 import argparse
+import time
+
 from utils.classification import Classification
 from utils.config import *
 import joblib
@@ -39,3 +41,4 @@ if __name__ == "__main__":
             for task_id in list_task:
                 classification = Classification()
                 classification.process(task_id, config_data, model, scaler)
+        time.sleep(5)
