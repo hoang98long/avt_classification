@@ -10,7 +10,5 @@ RUN conda init bash
 
 COPY /home/avt/github/avt_classification/requirements.txt .
 RUN conda run -n avt_classification pip install -r requirements.txt
-RUN conda install -n avt_classification -c conda-forge gdal
-RUN conda install -n avt_classification -c conda-forge rasterio
 
 CMD ["bash", "-c", "source activate avt_classification && cd /app/avt_classification && python main.py"]
