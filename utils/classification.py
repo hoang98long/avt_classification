@@ -137,6 +137,10 @@ class Classification:
             result = cursor.fetchone()
             # classification = Classification()
             task_param = ast.literal_eval(result[0])
+            if len(task_param) == 0:
+                task_stat_value_holder['value'] = 0
+                update_database(id, task_stat_value_holder['value'], conn)
+                return
             return_flag = self.classify(conn, id, task_param, model, scaler, config_data)
             cursor.close()
             if return_flag:
