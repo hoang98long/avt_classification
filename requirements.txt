@@ -3,4 +3,4 @@ numpy
 opencv_python
 psycopg2_binary
 scikit_learn
-skimage
+scikit_image
