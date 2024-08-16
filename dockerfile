@@ -13,4 +13,4 @@ RUN conda init bash
 COPY requirements.txt .
 RUN conda run -n avt_classification pip install -r requirements.txt
 
-CMD ["bash", "-c", "source activate avt_classification && cd /app/avt_classification && python main.py"]
+CMD ["bash", "-c", "source activate avt_classification && cd /app/avt_classification && python main.py --config_file /app/config.json"]
