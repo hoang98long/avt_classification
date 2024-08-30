@@ -74,7 +74,7 @@ class Classification:
     def __init__(self):
         pass
 
-    def classify(self, conn, id, task_param, model, scaler, config_data):
+    def classify(self, conn, id, task_param, config_data):
         input_files = []
         for ship_object in task_param:
             input_files.append(ship_object['path'])
@@ -96,7 +96,7 @@ class Classification:
                     download_file(ftp, input_file, local_file_path)
             classification_image = Classification_Image()
             for input_file, input_file_local in zip(input_files, input_files_local):
-                result = classification_image.classify(input_file_local, model, scaler)
+                result = classification_image.classify(input_file_local)
                 task_output[input_file] = result
             task_output = str(task_output).replace("'", "\"")
             # result = classification_image.classify(local_file_path, model, scaler)
@@ -141,7 +141,7 @@ class Classification:
                 task_stat_value_holder['value'] = 0
                 update_database(id, task_stat_value_holder['value'], conn)
                 return
-            return_flag = self.classify(conn, id, task_param, model, scaler, config_data)
+            return_flag = self.classify(conn, id, task_param, config_data)
             cursor.close()
             if return_flag:
                 task_stat_value_holder['value'] = 1
