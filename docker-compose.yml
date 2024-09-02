@@ -6,3 +6,4 @@ services:
       - ../config.json:/app/config.json
       - .:/app/avt_classification
     command: bash -c "source activate avt_classification && cd /app/avt_classification && python main.py --config_file /app/config.json"
+    restart: unless-stopped
