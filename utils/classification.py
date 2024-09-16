@@ -76,8 +76,12 @@ class Classification:
 
     def classify(self, conn, id, task_param, config_data):
         input_files = []
+        widths = []
+        heights = []
         for ship_object in task_param:
             input_files.append(ship_object['path'])
+            widths.append(ship_object['coords'][2])
+            heights.append(ship_object['coords'][3])
         try:
             # filename = src_img_path.split("/")[-1]
             # local_file_path = LOCAL_SRC_CLASSIFY_IMAGE_PATH + filename
@@ -95,8 +99,8 @@ class Classification:
                 if not os.path.isfile(local_file_path):
                     download_file(ftp, input_file, local_file_path)
             classification_image = Classification_Image()
-            for input_file, input_file_local in zip(input_files, input_files_local):
-                result = classification_image.classify(input_file_local)
+            for input_file, input_file_local, width, height in zip(input_files, input_files_local, widths, heights):
+                result = classification_image.classify(input_file_local, width, height)
                 task_output[input_file] = result
             task_output = str(task_output).replace("'", "\"")
             # result = classification_image.classify(local_file_path, model, scaler)
