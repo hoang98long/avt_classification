@@ -80,8 +80,8 @@ class Classification:
         heights = []
         for ship_object in task_param:
             input_files.append(ship_object['path'])
-            widths.append(ship_object['coords'][2])
-            heights.append(ship_object['coords'][3])
+            widths.append(float(ship_object['coords'][2]))
+            heights.append(float(ship_object['coords'][3]))
         try:
             # filename = src_img_path.split("/")[-1]
             # local_file_path = LOCAL_SRC_CLASSIFY_IMAGE_PATH + filename
