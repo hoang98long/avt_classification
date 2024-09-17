@@ -75,10 +75,12 @@ class Classification:
         pass
 
     def classify(self, conn, id, task_param, config_data):
+        detections = json.loads(task_param[1:-1])['detections']
         input_files = []
         widths = []
         heights = []
-        for ship_object in task_param:
+        for ship_object in detections:
+            # print(ship_object)
             input_files.append(ship_object['path'])
             widths.append(float(ship_object['coords'][2]))
             heights.append(float(ship_object['coords'][3]))
@@ -139,8 +141,9 @@ class Classification:
             cursor.execute("SELECT current_schema()")
             cursor.execute("SELECT task_param FROM avt_task WHERE id = %s", (id,))
             result = cursor.fetchone()
+            # print(result)
             # classification = Classification()
-            task_param = ast.literal_eval(result[0])
+            task_param = result[0]
             if len(task_param) == 0:
                 task_stat_value_holder['value'] = 0
                 update_database(id, task_stat_value_holder['value'], conn)
